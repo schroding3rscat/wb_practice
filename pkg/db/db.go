@@ -13,8 +13,7 @@ type Subscriptioner interface {
 	UpdateSubscription(subscriptionID int, plan string) (err error)
 }
 
-type dbClient struct {
-}
+type dbClient struct{}
 
 func (c *dbClient) GetTenantID(subscriptionID int) (tenantID int, err error) {
 	tenantID = rand.Int()
