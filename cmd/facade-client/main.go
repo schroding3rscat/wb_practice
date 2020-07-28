@@ -10,7 +10,7 @@ import (
 func main() {
 	dbClient := db.NewClient("file:test.db?cache=shared&mode=memory")
 	cloudClient := cloud.NewClient("http://localhost:8080")
-	plans := plan.NewProvider("/tmp/config.bak")
+	plans := plan.NewProvider()
 	pr := facade.NewProvisioner(dbClient, cloudClient, plans)
 
 	subscriptionID, err := pr.CreateSubscription("some name", "SKU123", 30)
@@ -27,5 +27,4 @@ func main() {
 	if err != nil {
 		panic("cannot create a subscription")
 	}
-
 }

@@ -20,6 +20,6 @@ func (p *plans) GetQuota(plan string) (storageBytes int64, err error) {
 }
 
 // NewProvider returns implementation of PlansProvider interface.
-func NewProvider(cfg string) PlansProvider {
+func NewProvider() PlansProvider {
 	return &plans{}
 }
