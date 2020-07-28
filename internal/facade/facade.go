@@ -1,14 +1,16 @@
 package facade
 
+import "github.com/schroding3rscat/wb_practice/internal/models"
+
 type db interface {
-	GetTenantID(subscriptionID int) (tenantID int, err error)
-	CreateSubscription(tenantID int, plan string, billingPeriodDay int) (subscriptionID int, err error)
+	GetTenant(subscriptionID int) (tenant models.Tenant, err error)
+	CreateSubscription(subscription models.Subscription) (subscriptionID int, err error)
 	DeleteSubscription(subscriptionID int) (err error)
 	UpdateSubscription(subscriptionID int, plan string) (err error)
 }
 
 type cloud interface {
-	CreateTenant(name string) (tenantID int, err error)
+	CreateTenant(tenant models.Tenant) (tenantID int, err error)
 	DeleteTenant(tenantID int) (err error)
 	SetTenantQuota(tenantID int, storageBytes int64) (err error)
 }
@@ -37,7 +39,7 @@ func (p *provisioner) CreateSubscription(name string, plan string, billingPeriod
 		return
 	}
 
-	tenantID, err := p.cloud.CreateTenant(name)
+	tenantID, err := p.cloud.CreateTenant(models.Tenant{Name: name})
 	if err != nil {
 		return
 	}
@@ -47,7 +49,11 @@ func (p *provisioner) CreateSubscription(name string, plan string, billingPeriod
 		return
 	}
 
-	subscriptionID, err = p.db.CreateSubscription(tenantID, plan, billingPeriodDay)
+	subscriptionID, err = p.db.CreateSubscription(models.Subscription{
+		TenantID:         tenantID,
+		Plan:             plan,
+		BillingPeriodDay: billingPeriodDay,
+	})
 	if err != nil {
 		return
 	}
@@ -56,7 +62,7 @@ func (p *provisioner) CreateSubscription(name string, plan string, billingPeriod
 }
 
 func (p *provisioner) ChangeSubscription(subscriptionID int, plan string) (err error) {
-	tenantID, err := p.db.GetTenantID(subscriptionID)
+	tenant, err := p.db.GetTenant(subscriptionID)
 	if err != nil {
 		return
 	}
@@ -66,7 +72,7 @@ func (p *provisioner) ChangeSubscription(subscriptionID int, plan string) (err e
 		return
 	}
 
-	err = p.cloud.SetTenantQuota(tenantID, storageBytes)
+	err = p.cloud.SetTenantQuota(tenant.ID, storageBytes)
 	if err != nil {
 		return
 	}
@@ -80,12 +86,12 @@ func (p *provisioner) ChangeSubscription(subscriptionID int, plan string) (err e
 }
 
 func (p *provisioner) TerminateSubscription(subscriptionID int) (err error) {
-	tenantID, err := p.db.GetTenantID(subscriptionID)
+	tenant, err := p.db.GetTenant(subscriptionID)
 	if err != nil {
 		return
 	}
 
-	err = p.cloud.DeleteTenant(tenantID)
+	err = p.cloud.DeleteTenant(tenant.ID)
 	if err != nil {
 		return
 	}
