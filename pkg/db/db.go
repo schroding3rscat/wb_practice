@@ -9,8 +9,8 @@ import (
 type Subscriptioner interface {
 	GetTenantID(subscriptionID int) (tenantID int, err error)
 	CreateSubscription(tenantID int, plan string, billingPeriodDay int) (subscriptionID int, err error)
-	DeleteSubscription(subscriptionID int) error
-	UpdateSubscription(subscriptionID int, plan string) error
+	DeleteSubscription(subscriptionID int) (err error)
+	UpdateSubscription(subscriptionID int, plan string) (err error)
 }
 
 type dbClient struct {
@@ -30,15 +30,15 @@ func (c *dbClient) CreateSubscription(tenantID int, plan string, billingPeriodDa
 }
 
 // DeleteSubscription removes subscription from the database.
-func (c *dbClient) DeleteSubscription(subscriptionID int) error {
+func (c *dbClient) DeleteSubscription(subscriptionID int) (err error) {
 	fmt.Printf("deleted subscription %v\n", subscriptionID)
-	return nil
+	return
 }
 
 // UpdateSubscription sets a new plan for the existing subscription.
-func (c *dbClient) UpdateSubscription(subscriptionID int, plan string) error {
+func (c *dbClient) UpdateSubscription(subscriptionID int, plan string) (err error) {
 	fmt.Printf("updated subscription %v\n", subscriptionID)
-	return nil
+	return
 }
 
 // NewClient returns the interface for subscription handling.
