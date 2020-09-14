@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/schroding3rscat/wb_practice/pkg/cloud"
-	"github.com/schroding3rscat/wb_practice/pkg/db"
-	"github.com/schroding3rscat/wb_practice/pkg/facade"
-	"github.com/schroding3rscat/wb_practice/pkg/plan"
+	"github.com/schroding3rscat/wb_practice/internal/cloud"
+	"github.com/schroding3rscat/wb_practice/internal/db"
+	"github.com/schroding3rscat/wb_practice/internal/facade"
+	"github.com/schroding3rscat/wb_practice/internal/plan"
 )
 
 func main() {

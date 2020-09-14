@@ -3,11 +3,13 @@ package cloud
 import (
 	"fmt"
 	"math/rand"
+
+	"github.com/schroding3rscat/wb_practice/internal/models"
 )
 
 // Cloud contains methods for tenant handling.
 type Cloud interface {
-	CreateTenant(name string) (tenantID int, err error)
+	CreateTenant(tenant models.Tenant) (tenantID int, err error)
 	DeleteTenant(tenantID int) (err error)
 	SetTenantQuota(tenantID int, storageBytes int64) (err error)
 }
@@ -15,7 +17,7 @@ type Cloud interface {
 type cloudClient struct{}
 
 // CreateTenant adds a new tenant to the cloud.
-func (c *cloudClient) CreateTenant(name string) (tenantID int, err error) {
+func (c *cloudClient) CreateTenant(tenant models.Tenant) (tenantID int, err error) {
 	tenantID = rand.Int()
 	fmt.Printf("created tenant %v\n", tenantID)
 	return
